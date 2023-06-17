@@ -1,0 +1,15 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: ext-authz
+spec:
+  selector:
+    matchLabels:
+      app: fastapi-app
+  action: CUSTOM
+  provider:
+    name: ext-authz
+  rules:
+  - to:
+    - operation:
+        paths: ["/items"]
