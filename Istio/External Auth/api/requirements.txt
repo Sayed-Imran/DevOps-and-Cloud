@@ -1,0 +1,4 @@
+fastapi==0.95.2
+uvicorn==0.22.0
+Jinja2==2.10.1
+markupsafe==2.0.1
