@@ -12,8 +12,9 @@ spec:
         app: fastapi-app
     spec:
       containers:
-      - name: fastapi-app1
-        image: sayedimran/fastapi-sample-app:v1
+      - name: fastapi-app
+        image: sayedimran/fastapi-sample-app:v1.0.1
+        imagePullPolicy: Always
         resources:
           limits:
             memory: "128Mi"
