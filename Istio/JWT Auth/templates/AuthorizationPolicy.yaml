@@ -1,0 +1,14 @@
+apiVersion: "security.istio.io/v1beta1"
+kind: "AuthorizationPolicy"
+metadata:
+  name: "{{ AUTHZPOLICY_NAME }}"
+  namespace: {{ NAMESPACE }}
+spec:
+  selector:
+    matchLabels:
+      {{ RULE_MATCH_KEY_VALUE }}
+  action: {{ ACTION }}
+  rules:
+  - from:
+    - source:
+        notRequestPrincipals: ["*"]

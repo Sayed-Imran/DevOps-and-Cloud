@@ -1,0 +1,13 @@
+apiVersion: "security.istio.io/v1beta1"
+kind: "RequestAuthentication"
+metadata:
+  name: {{ REQ_AUTH_NAME }}
+  namespace: {{ NAMESPACE }}
+spec:
+  selector:
+    matchLabels:
+      {{ RULE_MATCH_KEY_VALUE }}
+  jwtRules:
+  - issuer: "{{ ISSUER }}"
+    jwks: |
+      { "keys":[{{ PUBLIC }}]}
