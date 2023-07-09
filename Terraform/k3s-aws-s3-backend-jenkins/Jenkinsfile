@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+    environment {
+        AWS_DEFAULT_REGION='ap-south-1'
+    }
+    stages {
+        stage('Initializaing Terraform Backend') {
+            agent {
+                label 'docker'
+            }
+            steps {
+                withCredentials([aws(accessKeyVariable:'AWS_ACCESS_KEY_ID',credentialsId:'b7273a37-838e-44bc-9607-e41102b8a172',secretKeyVariable:'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                    if [ -d "DevOps-and-Cloud" ]; then
+                        echo "Folder exists. Deleting..."
+                        sudo rm -rf "DevOps-and-Cloud"
+                        sudo echo "Folder deleted."
+                    fi
+	                git clone  https://github.com/Sayed-Imran/DevOps-and-Cloud.git
+	                sudo docker run -t  -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -v $PWD/DevOps-and-Cloud/Terraform/k3s-aws-s3-backend-jenkins:/workspace -w /workspace hashicorp/terraform init
+	               '''
+                }
+            }
+        }
+        stage("Infrastructure Plan") {
+            agent {
+                label 'docker'
+            }
+            steps {
+                withCredentials([aws(accessKeyVariable:'AWS_ACCESS_KEY_ID',credentialsId:'b7273a37-838e-44bc-9607-e41102b8a172',secretKeyVariable:'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+	                sudo docker run -t  -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -v $PWD/DevOps-and-Cloud/Terraform/k3s-aws-s3-backend-jenkins:/workspace -w /workspace hashicorp/terraform plan
+	               '''
+                }
+            }
+        }
+
+        stage("Applying Terraform Infrastructure") {
+            agent {
+                label 'docker'
+            }
+            steps {
+                withCredentials([aws(accessKeyVariable:'AWS_ACCESS_KEY_ID',credentialsId:'b7273a37-838e-44bc-9607-e41102b8a172',secretKeyVariable:'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                    sudo docker run -t  -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -v $PWD/DevOps-and-Cloud/Terraform/k3s-aws-s3-backend-jenkins:/workspace -w /workspace hashicorp/terraform apply -auto-approve
+                   '''
+                }
+            }
+        }
+    }
+}
