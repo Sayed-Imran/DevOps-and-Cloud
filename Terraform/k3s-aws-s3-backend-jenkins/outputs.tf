@@ -1,21 +1,21 @@
 output "name" {
-  value = aws_instance.k3s-master-aws.tags.Name
+  value = aws_instance.k3s-master.tags.Name
 }
 
 output "public_ip" {
-  value = aws_instance.k3s-master-aws.public_ip
+  value = aws_instance.k3s-master.public_ip
 }
 
 output "private_ip" {
-  value = aws_instance.k3s-master-aws.private_ip
+  value = aws_instance.k3s-master.private_ip
 }
 
 output "instance_id" {
-  value = aws_instance.k3s-master-aws.id
+  value = aws_instance.k3s-master.id
 }
 
 output "instance_type" {
-  value = aws_instance.k3s-master-aws.instance_type
+  value = aws_instance.k3s-master.instance_type
 }
 
 output "sg-name" {
