@@ -1,6 +1,6 @@
 __pycache__/
 keys/
-.terraform/
+.terraform*
 terraform.tfstate
 terraform.tfstate.backup
 *.pem

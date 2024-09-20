@@ -1,0 +1,8 @@
+project_id = "wide-factor-434106-m1"
+region = "asia-south1"
+zone = "asia-south1-a"
+cluster_name = "istio-cluster"
+network = "default"
+subnetwork = "default"
+pod_cidr = "172.16.0.0/16"
+service_cidr = "172.17.0.0/16"
