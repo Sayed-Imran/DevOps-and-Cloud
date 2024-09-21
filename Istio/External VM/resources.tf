@@ -68,15 +68,15 @@ resource "google_container_cluster" "primary" {
 }
 
 resource "google_compute_instance" "external_vm" {
-  name         = "my-mesh-vm"
-  machine_type = "n1-standard-2"
+  name         = "external-vm"
+  machine_type = "e3-standard-2"
   zone = var.zone
   boot_disk {
     initialize_params {
       image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
     }
   }
-
+  tags = ["external-vm"]
   network_interface {
     network    = "default"
     subnetwork = "default"
@@ -86,14 +86,22 @@ resource "google_compute_instance" "external_vm" {
   }
 }
 
-resource "null_resource" "install_istio" {
-  depends_on = [google_container_cluster.primary]
+resource "google_compute_firewall" "allow_kubernetes_pod_cidr" {
+  name    = "allow-kubernetes-pod"
+  network = var.network
 
-  provisioner "local-exec" {
-    command = <<EOT
-      gcloud container clusters get-credentials ${google_container_cluster.primary.name} --zone ${google_container_cluster.primary.location} --project ${var.project_id}
-      istioctl install --set values.pilot.env.PILOT_ENABLE_WORKLOAD_ENTRY_AUTOREGISTRATION=true --set values.pilot.env.PILOT_ENABLE_WORKLOAD_ENTRY_HEALTHCHECKS=true
+  allow {
+    protocol = "tcp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["8080"]
+  }
+  source_ranges = [var.pod_cidr]
+  target_tags = [var.network_tags_for_vm]
+  provisioner "remote-exec" {
       
-    EOT
   }
 }
+
