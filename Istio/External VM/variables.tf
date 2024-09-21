@@ -71,3 +71,14 @@ variable "service_cidr" {
   description = "The CIDR block for the services in the cluster"
   type        = string
 }
+
+variable "network_tags_for_vm" {
+  description = "Network tags for external VM"
+  type =  string
+  default = "external-vm"
+}
+variable "vm_user" {
+  description = "The user to connect to the external VM"
+  type        = string
+  default     = "ubuntu"
+}
