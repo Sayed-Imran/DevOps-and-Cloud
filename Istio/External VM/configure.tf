@@ -5,7 +5,8 @@ resource "null_resource" "install_istio" {
     command = <<EOT
       gcloud container clusters get-credentials ${google_container_cluster.primary.name} --zone ${google_container_cluster.primary.location} --project ${var.project_id}
       istioctl install --set values.pilot.env.PILOT_ENABLE_WORKLOAD_ENTRY_AUTOREGISTRATION=true --set values.pilot.env.PILOT_ENABLE_WORKLOAD_ENTRY_HEALTHCHECKS=true
-      GATEWAY_IP=$(kubectl get svc -n istio-system istio-ingressgateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')
+      kubectl apply -f https://raw.githubusercontent.com/Sayed-Imran/DevOps-and-Cloud/refs/heads/master/Istio/External%20VM/istio-setup/east-west-gateway.yaml
+      kubectl apply -f https://raw.githubusercontent.com/Sayed-Imran/DevOps-and-Cloud/refs/heads/master/Istio/External%20VM/istio-setup/istio-gateway.yaml
       istioctl x workload entry configure --file ratings-workloadgroup.yaml --output vm_files --autoregister
     EOT
   }
