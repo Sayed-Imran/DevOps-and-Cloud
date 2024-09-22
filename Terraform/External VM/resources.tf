@@ -100,8 +100,6 @@ resource "google_compute_firewall" "allow_kubernetes_pod_cidr" {
   }
   source_ranges = [var.pod_cidr]
   target_tags = [var.network_tags_for_vm]
-  provisioner "remote-exec" {
-      
-  }
+
 }
 

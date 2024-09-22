@@ -21,7 +21,7 @@ resource "null_resource" "configure_vm" {
 
     connection {
         type        = "ssh"
-        host        = google_compute_instance.vm.network_interface.0.access_config.0.nat_ip
+        host        = google_compute_instance.external_vm.network_interface.0.access_config.0.nat_ip
         user        = var.vm_user
         private_key = tls_private_key.ssh_key_gcp.private_key_pem
     }
@@ -31,7 +31,7 @@ resource "null_resource" "configure_vm" {
   
     connection {
         type        = "ssh"
-        host        = google_compute_instance.vm.network_interface.0.access_config.0.nat_ip
+        host        = google_compute_instance.external_vm.network_interface.0.access_config.0.nat_ip
         user        = var.vm_user
         private_key = tls_private_key.ssh_key_gcp.private_key_pem
     }
@@ -42,14 +42,13 @@ resource "null_resource" "configure_vm" {
         "sudo mkdir -p /etc/certs",
         "sudo cp /home${var.vm_user}/root-cert.pem /etc/certs/root-cert.pem",
         "sudo  mkdir -p /var/run/secrets/tokens",
-        "sudo cp /home/${var.var.vm_user}/istio-token /var/run/secrets/tokens/istio-token",
+        "sudo cp /home/${var.vm_user}/istio-token /var/run/secrets/tokens/istio-token",
         "sudo cp ${var.vm_user}/cluster.env /var/lib/istio/envoy/cluster.env",
         "sudo cp /home${var.vm_user}/mesh.yaml /etc/istio/config/mesh",
         "sudo sh -c 'cat $(eval echo ~$SUDO_USER)/hosts >> /etc/hosts'",
         "sudo mkdir -p /etc/istio/proxy",
         "sudo chown -R istio-proxy /var/lib/istio /etc/certs /etc/istio/proxy /etc/istio/config /var/run/secrets /etc/certs/root-cert.pem",
         "sudo systemctl restart istio",
-        
      ]
   }
 }
