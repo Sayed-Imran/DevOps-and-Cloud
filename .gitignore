@@ -4,3 +4,4 @@ keys/
 terraform.tfstate
 terraform.tfstate.backup
 *.pem
+*.env
