@@ -10,6 +10,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: minio-pvc
+  namespace: minio
 spec:
   resources:
     requests:
@@ -23,6 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: minio
+  namespace: minio
 spec:
   selector:
     matchLabels:
@@ -38,8 +40,8 @@ spec:
           claimName: minio-pvc
       initContainers:
       - name: restore-minio
-        image: quay.io/minio/minio
-        command: ["/bin/bash", "-c", "curl", "-Lo", "/data/animal-images.tar.gz", "https://github.com/Sayed-Imran/DevOps-and-Cloud/raw/refs/heads/master/Sample-Apps/animal-images-display-app/minio-storage/minio-data-backup.tar.gz", "&&", "tar", "-xvf", "/data/animal-images.tar.gz", "-C", "/data", "&&", "rm", "/data/animal-images.tar.gz"]
+        image: sayedimran/curl-tar:v1.0.0
+        command: ["sh", "-c", "curl -Lo /data/animal-images.tar.gz https://github.com/Sayed-Imran/DevOps-and-Cloud/raw/refs/heads/master/Sample-Apps/animal-images-display-app/minio-storage/animal-images.tar.gz && tar -xvf /data/animal-images.tar.gz -C /data && rm /data/animal-images.tar.gz"]
         volumeMounts:
         - name: minio-storage
           mountPath: /data
@@ -51,11 +53,13 @@ spec:
         - name: minio-storage
           mountPath: /data
 
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: minio
+  namespace: minio
 spec:
   selector:
     app: minio
@@ -66,4 +70,4 @@ spec:
   - port: 9001
     targetPort: 9001
     name: minio-console
-  type: LoadBalancer
+  type: ClusterIP
