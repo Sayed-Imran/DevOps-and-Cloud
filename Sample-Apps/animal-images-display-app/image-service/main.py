@@ -39,7 +39,7 @@ def get_image_from_minio(image_name: str):
 @app.get("/images/{object}/{image_id}")
 async def get_image(object: str, image_id: str):
     try:
-        image_path= f"{object}/{image_id}-vm.jpg"
+        image_path= f"{object}/{image_id}.jpg"
         
         response = await asyncio.get_event_loop().run_in_executor(
             executor, get_image_from_minio, image_path
