@@ -1,16 +1,15 @@
 apiVersion: v1
-kind: Namespace
+kind: ServiceAccount
 metadata:
-  name: minio
-  labels:
-    istio-injection: enabled
+  name: minio-sa
+  namespace: animal-album
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: minio-pvc
-  namespace: minio
+  namespace: animal-album
 spec:
   resources:
     requests:
@@ -24,7 +23,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: minio
-  namespace: minio
+  namespace: animal-album
 spec:
   selector:
     matchLabels:
@@ -34,6 +33,7 @@ spec:
       labels:
         app: minio
     spec:
+      serviceAccountName: minio-sa
       volumes:
       - name: minio-storage
         persistentVolumeClaim:
@@ -59,7 +59,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: minio
-  namespace: minio
+  namespace: animal-album
 spec:
   selector:
     app: minio

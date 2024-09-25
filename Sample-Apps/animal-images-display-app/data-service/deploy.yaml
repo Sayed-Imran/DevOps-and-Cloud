@@ -1,7 +1,15 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: data-service-sa
+  namespace: animal-album
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: data-service
+  namespace: animal-album
 spec:
   selector:
     matchLabels:
@@ -11,15 +19,14 @@ spec:
       labels:
         app: data-service
     spec:
+      serviceAccountName: data-service-sa
       containers:
       - name: data-service
         image: sayedimran/animal-data-service:v1.0.0
+        imagePullPolicy: Always
         env:
         - name: MONGO_URI
-          valueFrom:
-            secretKeyRef:
-              name: mongo-secret
-              key: MONGO_URI
+          value: "mongodb://mongo.animal-album.svc:27017/"
         - name: IMAGE_SERVICE
           value: "http://image-service.default.svc:8080"
         resources:
@@ -35,6 +42,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: data-service
+  namespace: animal-album
 spec:
   selector:
     app: data-service

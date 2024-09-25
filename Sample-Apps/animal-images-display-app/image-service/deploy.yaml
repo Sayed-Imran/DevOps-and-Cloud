@@ -1,7 +1,15 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: image-service-sa
+  namespace: animal-album
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: image-service
+  namespace: animal-album
 spec:
   selector:
     matchLabels:
@@ -11,13 +19,14 @@ spec:
       labels:
         app: image-service
     spec:
+      serviceAccountName: image-service-sa
       containers:
       - name: image-service
         image: sayedimran/animal-image-service:v1.0.0
         imagePullPolicy: Always
         env:
         - name: MINIO_ENDPOINT
-          value: "minio.minio.svc:9000"
+          value: "minio.animal-album.svc:9000"
         resources:
           limits:
             memory: "128Mi"
@@ -30,6 +39,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: image-service
+  namespace: animal-album
 spec:
   selector:
     app: image-service
