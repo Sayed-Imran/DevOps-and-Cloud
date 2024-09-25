@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-service
+  namespace: animal-album
+spec:
+  selector:
+    matchLabels:
+      app: image-service
+  template:
+    metadata:
+      labels:
+        app: image-service
+    spec:
+      serviceAccountName: image-service-sa
+      containers:
+      - name: image-service
+        image: sayedimran/animal-image-service:v1.0.0
+        imagePullPolicy: Always
+        env:
+        - name: MINIO_ENDPOINT
+          value: "minio.animal-album.svc:9000"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8000
