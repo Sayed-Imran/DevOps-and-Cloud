@@ -49,3 +49,49 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: data-service
+  namespace: animal-album
+spec:
+  gateways:
+  - istio-system/animal-album-gateway
+  hosts:
+  - "*"
+  http:
+  - match:
+    - uri:
+        prefix: /data
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: data-service.animal-album.svc
+        port:
+          number: 80
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: animal-album-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - '*'
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    - '*'
