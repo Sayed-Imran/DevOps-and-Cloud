@@ -1,0 +1,6 @@
+resources:
+  - pre-requisites/
+  - mongo/
+  - minio/
+  - data-service/
+  - image-service/
