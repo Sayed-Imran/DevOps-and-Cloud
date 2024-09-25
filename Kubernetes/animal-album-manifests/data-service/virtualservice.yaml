@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: data-service
+  namespace: animal-album
+spec:
+  gateways:
+  - istio-system/animal-album-gateway
+  hosts:
+  - "app.devopsguru.enginee"
+  http:
+  - match:
+    - uri:
+        prefix: /data/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: data-service.animal-album.svc
+        port:
+          number: 80
