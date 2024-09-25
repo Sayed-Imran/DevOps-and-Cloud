@@ -7,7 +7,7 @@ spec:
   gateways:
   - istio-system/animal-album-gateway
   hosts:
-  - "app.devopsguru.enginee"
+  - "app.devopsguru.engineer"
   http:
   - match:
     - uri:
