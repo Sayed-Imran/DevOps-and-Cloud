@@ -4,11 +4,14 @@ from minio import Minio
 from io import BytesIO
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 from concurrent.futures import ThreadPoolExecutor
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
-app = FastAPI()
+app=FastAPI()
+
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 class Config(BaseSettings):
     minio_endpoint: str

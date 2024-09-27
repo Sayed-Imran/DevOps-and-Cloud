@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic_settings import BaseSettings
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -15,6 +16,8 @@ config = Config()
 mongo_client = MongoClient(config.mongo_uri)
 
 app=FastAPI()
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
 
 @app.get("/{animal}")
 def get_animal_details(animal: str):
