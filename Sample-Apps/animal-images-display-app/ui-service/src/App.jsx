@@ -3,7 +3,7 @@ import { Card, CardActionArea, CardMedia, CardContent, Typography } from '@mui/m
 import {faHeart, faX} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const ANIMAL_CATEGORIES = ['cats', 'dogs', 'fish', 'horse', 'rabbit', 'cow','birds'];
+const ANIMAL_CATEGORIES = ['cats', 'dogs', 'fish', 'horse', 'rabbit', 'birds', 'cow'];
 
 const CreateCards = ({
                          image = '',
