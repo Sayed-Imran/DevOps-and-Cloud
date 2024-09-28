@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+
+body {
+    /*background: #0cb577;*/
+    background-image: linear-gradient(to bottom right, #2E3192, #1BFFFF);
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
