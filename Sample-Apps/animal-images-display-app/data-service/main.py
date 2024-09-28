@@ -33,7 +33,7 @@ def get_animal_details(animal: str):
         },
         {
             "$sample": {
-                "size": 30
+                "size": 16
             }
         },
         {
