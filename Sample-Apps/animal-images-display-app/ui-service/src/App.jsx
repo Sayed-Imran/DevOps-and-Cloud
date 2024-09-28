@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Card, CardActionArea, CardMedia, CardContent, Typography, Button } from '@mui/material';
+import { Card, CardActionArea, CardMedia, CardContent, Typography } from '@mui/material';
 import {faHeart, faX} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {Popup} from "./components/Popup.jsx";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const ANIMAL_CATEGORIES = ['cats', 'dogs', 'fish', 'horse', 'rabbit', 'cow'];
+const ANIMAL_CATEGORIES = ['cats', 'dogs', 'fish', 'horse', 'rabbit', 'cow','birds'];
 
 const CreateCards = ({
                          image = '',
@@ -12,7 +11,6 @@ const CreateCards = ({
                          description = '',
                          likes = 0,
                          color = '',
-                         user = {},
                          handleOpenPopup = null,
                      }) => {
     const animal = [image, alt, description, likes, color, handleOpenPopup];
@@ -46,7 +44,7 @@ function App() {
     const [error, setError] = useState(null);
     const [selectedAnimal, setSelectedAnimal] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-
+    const [refetch, setRefetch] = useState(true);
 
 
     const fetchAnimalData = async (category) => {
@@ -54,7 +52,6 @@ function App() {
         setError(null);
 
         try {
-            //http://app.devopsguru.engineer/data/cow
             const response = await fetch(`http://app.devopsguru.engineer/data/${category}`);
             const data = await response.json();
             setAnimalData(data);
@@ -70,7 +67,7 @@ function App() {
         if (selectedCategory) {
             fetchAnimalData(selectedCategory);
         }
-    }, [selectedCategory]);
+    }, [selectedCategory, refetch]);
 
     const handleCategoryChange = (event) => {
         const category = ANIMAL_CATEGORIES.find((animal) => animal === event);
@@ -91,20 +88,16 @@ function App() {
         setIsPopupOpen(false);
     };
 
-    const handleKeypress = (e) => {
-        e.preventDefault();
-        console.log(e.key);
-        if (e.key === 27) {
-            handleClosePopup();
-        }
-    }
-
     const clicked = (e) => {
         e.preventDefault();
         if (e.target.id === 'popup') {
             handleClosePopup();
         }
     }
+
+    useEffect(() => {
+        handleCategoryChange(ANIMAL_CATEGORIES[Math.floor(Math.random() * ANIMAL_CATEGORIES.length)]);
+    }, []);
 
     useEffect(() => {
         const handleEscapeKeyDown = (event) => {
@@ -123,7 +116,7 @@ function App() {
     return (
         <div className="container mx-auto px-4 py-8 duration-500">
             <h1 className="text-3xl font-bold text-center mb-8">Animal Album</h1>
-            <div className="flex justify-center space-x-4 mb-8">
+            <div className={"flex 2xl:flex-row xl:flex-row lg:flex-row md:flex-row sm:flex-row flex-col justify-center 2xl:gap-x-4 xl:gap-x-4 lg:gap-x-4 md:gap-x-4 sm:gap-x-4 gap-y-4 mb-8"}>
                 {ANIMAL_CATEGORIES.map((category) => (
                     <button
                         key={category}
