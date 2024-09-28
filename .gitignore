@@ -5,3 +5,5 @@ terraform.tfstate
 terraform.tfstate.backup
 *.pem
 *.env
+node_modules/
+dist/
