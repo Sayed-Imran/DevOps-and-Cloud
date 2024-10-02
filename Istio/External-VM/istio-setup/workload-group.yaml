@@ -1,11 +1,11 @@
 apiVersion: networking.istio.io/v1beta1
 kind: WorkloadGroup
 metadata:
-  name: image-service
+  name: data-service
   namespace: animal-album
 spec:
   metadata:
     labels:
-      app: image-service
+      app: data-service
   template:
-    serviceAccount: image-service-sa
+    serviceAccount: data-service-sa
