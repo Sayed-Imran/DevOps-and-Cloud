@@ -64,7 +64,7 @@ We'll be using a sample application to demostrate the communication between the 
 
 #### Application Flow Diagram
 
-![Animal Album](../../Docs/media/AnimalAppArch.svg)
+![Animal Album](../Docs/media/AnimalAppArch.svg)
 
 ```bash
 kubectl apply -k Kubernetes/animal-album-manifests/
