@@ -7,8 +7,8 @@ import uvicorn
 
 
 class Config(BaseSettings):
-    mongo_uri: str 
-    image_service: str 
+    mongo_uri: str = "mongodb://mongo.animal-album:27017"
+    image_service: str = "http://app.devopsguru.engineer/images"
     port: int = 8080
 
 load_dotenv()
