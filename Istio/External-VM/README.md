@@ -19,6 +19,7 @@ This guide will help you set up Istio on a Kubernetes cluster with an external V
   - [Copy the generated files to the external VM](#52-copy-the-generated-files-to-the-external-vm)
   - [Move the files to the correct location on the external VM](#53-move-the-files-to-the-correct-location-on-the-external-vm)
   - [Install Istio sidecar on the external VM](#54-install-istio-sidecar-on-the-external-vm)
+  - [Final Architecture](#final-architecture)
 
 ### 1. Kubernetes
 
@@ -148,4 +149,8 @@ kubectl get workloadentry -n animal-album
 
 After getting a record for the same. The traffic can be sent and recieved from/to the external VM through the Kubernetes Cluster!
 
+
+## Final Architecture
+
+![Final Architecture](../../Docs/media/IstioExternalVMArch.svg)
 
