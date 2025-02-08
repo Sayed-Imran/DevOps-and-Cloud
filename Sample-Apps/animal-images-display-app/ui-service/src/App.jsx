@@ -52,7 +52,7 @@ function App() {
         setError(null);
 
         try {
-            const response = await fetch(`http://app.devopsguru.engineer/data/${category}`);
+            const response = await fetch(`https://app.devopsguru.engineer/data/${category}`);
             const data = await response.json();
             setAnimalData(data);
         } catch (error) {
