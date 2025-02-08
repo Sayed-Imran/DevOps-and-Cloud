@@ -64,4 +64,4 @@ spec:
         prefix: /images
     route:
     - destination:
-        host: data-service.animal-album.svc.cluster.local
+        host: image-service.animal-album.svc.cluster.local
