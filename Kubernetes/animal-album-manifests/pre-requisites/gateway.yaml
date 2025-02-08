@@ -13,3 +13,12 @@ spec:
       name: http
       number: 80
       protocol: HTTP
+  - hosts:
+    - 'app.devopsguru.engineer'
+    port:
+      name: https
+      number: 443
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: animal-album-tls

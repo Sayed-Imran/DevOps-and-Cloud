@@ -73,19 +73,3 @@ spec:
         host: data-service.animal-album.svc.cluster.local
         port:
           number: 80
-
----
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: animal-album-gateway
-spec:
-  selector:
-    istio: ingressgateway
-  servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-    - '*'

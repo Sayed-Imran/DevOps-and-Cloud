@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: ui-service
-        image: sayedimran/animal-ui-service:v1.0.0
+        image: sayedimran/animal-ui-service:v1.0.1
         resources:
           limits:
             memory: "128Mi"
