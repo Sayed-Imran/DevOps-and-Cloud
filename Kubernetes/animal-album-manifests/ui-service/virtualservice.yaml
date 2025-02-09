@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: ui-service
+  namespace: animal-album
+spec:
+  gateways:
+  - istio-system/animal-album-gateway
+  hosts:
+  - app.devopsguru.engineer
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: ui-service.animal-album.svc.cluster.local

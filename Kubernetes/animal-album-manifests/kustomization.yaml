@@ -4,3 +4,4 @@ resources:
   - minio/
   - data-service/
   - image-service/
+  - ui-service/

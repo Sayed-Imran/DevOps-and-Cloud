@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-service
+  namespace: animal-album
+spec:
+  selector:
+    matchLabels:
+      app: ui-service
+  strategy:
+  template:
+    metadata:
+      labels:
+        app: ui-service
+    spec:
+      containers:
+      - image: sayedimran/animal-ui-service:v1.0.1
+        imagePullPolicy: IfNotPresent
+        name: ui-service
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
