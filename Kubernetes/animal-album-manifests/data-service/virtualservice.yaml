@@ -16,6 +16,6 @@ spec:
       uri: /
     route:
     - destination:
-        host: data-service.animal-album.svc
+        host: data-service
         port:
           number: 80

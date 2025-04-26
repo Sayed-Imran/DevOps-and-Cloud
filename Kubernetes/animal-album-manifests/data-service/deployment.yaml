@@ -21,7 +21,7 @@ spec:
         - name: MONGO_URI
           value: "mongodb://mongo.animal-album.svc:27017/"
         - name: IMAGE_SERVICE
-          value: "http://image-service.default.svc:8080"
+          value: "http://app.devopsguru.engineer/images"
         resources:
           limits:
             memory: "128Mi"
