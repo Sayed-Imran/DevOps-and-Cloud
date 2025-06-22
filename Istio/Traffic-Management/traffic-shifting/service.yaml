@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: movie-backend
+  namespace: traffic-shifting-demo
+  labels:
+    app: movie-backend
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+  selector:
+    app: movie-backend
+  type: ClusterIP

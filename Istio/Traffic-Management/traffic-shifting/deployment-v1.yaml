@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie-backend-v1
+  namespace: traffic-shifting-demo
+spec:
+  selector:
+    matchLabels:
+      app: movie-backend
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: movie-backend
+        version: v1
+    spec:
+      containers:
+        - name: movie-backend
+          image: sayedimran/istio-sample-app-backend:v1.0.1
+          env:
+            - name: TMDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tmdb-api-key
+                  key: TMDB_API_KEY
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8000

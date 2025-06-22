@@ -1,0 +1,201 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: observability-config
+  namespace: traffic-shifting-demo
+data:
+  kiali.yaml: |
+    apiVersion: kiali.io/v1alpha1
+    kind: Kiali
+    metadata:
+      name: kiali
+      namespace: istio-system
+    spec:
+      auth:
+        strategy: anonymous
+      external_services:
+        grafana:
+          url: http://grafana:3000
+        prometheus:
+          url: http://prometheus:9090
+        tracing:
+          url: http://jaeger-query:16686
+
+  grafana-dashboard.json: |
+    {
+      "dashboard": {
+        "id": null,
+        "title": "Istio Traffic Shifting",
+        "tags": ["istio", "traffic-shifting"],
+        "timezone": "browser",
+        "panels": [
+          {
+            "title": "Request Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(rate(istio_requests_total[5m])) by (destination_service_name)",
+                "legendFormat": "{{destination_service_name}}"
+              }
+            ]
+          },
+          {
+            "title": "Success Rate",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "sum(rate(istio_requests_total{response_code!~\"5.*\"}[5m])) / sum(rate(istio_requests_total[5m]))",
+                "legendFormat": "Success Rate"
+              }
+            ]
+          }
+        ]
+      }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traffic-policies
+  namespace: default
+data:
+  shift-100-0.yaml: |
+    apiVersion: networking.istio.io/v1
+    kind: VirtualService
+    metadata:
+      name: movie-backend-shift-100
+    spec:
+      hosts:
+        - movie-backend
+      http:
+        - match:
+            - uri:
+                prefix: /
+          route:
+            - destination:
+                host: movie-backend
+                subset: v1
+              weight: 100
+            - destination:
+                host: movie-backend
+                subset: v2
+              weight: 0
+
+  shift-80-20.yaml: |
+    apiVersion: networking.istio.io/v1
+    kind: VirtualService
+    metadata:
+      name: movie-backend-shift-80-20
+    spec:
+      hosts:
+        - movie-backend
+      http:
+        - match:
+            - uri:
+                prefix: /
+          route:
+            - destination:
+                host: movie-backend
+                subset: v1
+              weight: 80
+            - destination:
+                host: movie-backend
+                subset: v2
+              weight: 20
+
+  shift-50-50.yaml: |
+    apiVersion: networking.istio.io/v1
+    kind: VirtualService
+    metadata:
+      name: movie-backend-shift-50-50
+    spec:
+      hosts:
+        - movie-backend
+      http:
+        - match:
+            - uri:
+                prefix: /
+          route:
+            - destination:
+                host: movie-backend
+                subset: v1
+              weight: 50
+            - destination:
+                host: movie-backend
+                subset: v2
+              weight: 50
+
+  shift-0-100.yaml: |
+    apiVersion: networking.istio.io/v1
+    kind: VirtualService
+    metadata:
+      name: movie-backend-shift-0-100
+    spec:
+      hosts:
+        - movie-backend
+      http:
+        - match:
+            - uri:
+                prefix: /
+          route:
+            - destination:
+                host: movie-backend
+                subset: v1
+              weight: 0
+            - destination:
+                host: movie-backend
+                subset: v2
+              weight: 100
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-scenarios
+  namespace: default
+data:
+  load-test.yaml: |
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: load-test
+    spec:
+      containers:
+      - name: load-test
+        image: busybox
+        command:
+        - /bin/sh
+        - -c
+        - |
+          while true; do
+            wget -q -O- http://movie-backend:8000/api/movies
+            sleep 1
+          done
+      restartPolicy: Never
+
+  chaos-test.yaml: |
+    apiVersion: networking.istio.io/v1
+    kind: VirtualService
+    metadata:
+      name: movie-backend-chaos
+    spec:
+      hosts:
+        - movie-backend
+      http:
+        - fault:
+            delay:
+              percentage:
+                value: 10.0
+              fixedDelay: 5s
+            abort:
+              percentage:
+                value: 5.0
+              httpStatus: 503
+          match:
+            - uri:
+                prefix: /
+          route:
+            - destination:
+                host: movie-backend
+                subset: v1

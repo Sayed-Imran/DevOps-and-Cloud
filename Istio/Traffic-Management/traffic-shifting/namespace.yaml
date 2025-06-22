@@ -1,0 +1,7 @@
+# Namespace configuration for traffic shifting demo
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traffic-shifting-demo
+  labels:
+    istio-injection: enabled
