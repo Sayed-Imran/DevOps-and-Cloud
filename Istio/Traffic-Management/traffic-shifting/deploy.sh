@@ -44,6 +44,12 @@ create_namespace() {
 
 # Function to create TMDB API key secret
 create_secret() {
+    # Check if namespace exists first
+    if ! kubectl get namespace traffic-shifting-demo &>/dev/null; then
+        echo "⚠️ Namespace doesn't exist, secret will be created after namespace creation"
+        return 0
+    fi
+    
     if kubectl get secret tmdb-api-key -n traffic-shifting-demo &>/dev/null; then
         echo "✅ TMDB API key secret already exists"
     else
@@ -61,6 +67,9 @@ deploy_resources() {
     echo "📦 Creating namespace..."
     create_namespace
     
+    echo "📦 Creating secret..."
+    create_secret
+    
     echo "📦 Deploying frontend components..."
     kubectl apply -f frontend.yaml
     
@@ -76,12 +85,16 @@ deploy_resources() {
     echo "📦 Deploying configuration maps..."
     kubectl apply -f configs.yaml
     
+    echo "📦 Setting initial traffic to 100% V1..."
+    kubectl apply -f virtual-service-100-0.yaml
+    
     echo "⏳ Waiting for deployments to be ready..."
     kubectl wait --for=condition=available --timeout=300s deployment/movie-frontend -n traffic-shifting-demo || echo "⚠️ Frontend deployment timeout"
     kubectl wait --for=condition=available --timeout=300s deployment/movie-backend-v1 -n traffic-shifting-demo || echo "⚠️ Backend v1 deployment timeout"
     kubectl wait --for=condition=available --timeout=300s deployment/movie-backend-v2 -n traffic-shifting-demo || echo "⚠️ Backend v2 deployment timeout"
     
     echo "✅ All deployments are ready!"
+    echo "🎯 Traffic is set to 100% V1, 0% V2"
 }
 
 # Function to apply traffic configuration
@@ -250,9 +263,6 @@ show_menu() {
 # Check prerequisites
 create_namespace
 check_istio_injection traffic-shifting-demo
-
-# Create secret
-create_secret
 
 # Main execution
 if [[ $# -eq 0 ]]; then
