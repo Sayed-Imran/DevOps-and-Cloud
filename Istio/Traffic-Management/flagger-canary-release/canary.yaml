@@ -1,0 +1,55 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: canary-release
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: movie-backend
+  progressDeadlineSeconds: 60
+  service:
+    port: 8000
+    targetPort: 8000
+    gateways:
+      - istio-gateway
+    hosts:
+      - "devops.imran"
+      - "internal.rollout"
+    match:
+      - uri:
+          prefix: /api/
+    rewrite:
+      uri: /
+
+    retries:
+      attempts: 3
+      perTryTimeout: 1s
+      retryOn: "gateway-error,connect-failure,refused-stream"
+  analysis:
+    interval: 1m
+    threshold: 10
+    maxWeight: 50
+    stepWeight: 10
+    metrics:
+      - name: request-success-rate
+        thresholdRange:
+          min: 99
+        interval: 1m
+      - name: request-duration
+        thresholdRange:
+          max: 500
+        interval: 30s
+    webhooks:
+      - name: acceptance-test
+        type: pre-rollout
+        url: http://flagger-loadtester.istio-system/
+        timeout: 30s
+        metadata:
+          type: bash
+          cmd: "curl  http://sample-workload-canary.default:8000/ | grep sample-workload"
+      - name: load-test
+        url: http://flagger-loadtester.istio-system/
+        timeout: 10s
+        metadata:
+          cmd: "hey -z 2m -q 10 -c 2 http://sample-workload-canary.default:8000/"
