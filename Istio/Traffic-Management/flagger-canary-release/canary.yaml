@@ -21,7 +21,6 @@ spec:
           prefix: /api/
     rewrite:
       uri: /
-
     retries:
       attempts: 3
       perTryTimeout: 1s
@@ -47,9 +46,9 @@ spec:
         timeout: 30s
         metadata:
           type: bash
-          cmd: "curl  http://sample-workload-canary.default:8000/ | grep sample-workload"
+          cmd: "curl  http://movie-backend-canary.default:8000/"
       - name: load-test
         url: http://flagger-loadtester.istio-system/
         timeout: 10s
         metadata:
-          cmd: "hey -z 2m -q 10 -c 2 http://sample-workload-canary.default:8000/"
+          cmd: "hey -z 2m -q 10 -c 2 http://movie-backend-canary.default:8000/"
