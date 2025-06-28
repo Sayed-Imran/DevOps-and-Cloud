@@ -15,7 +15,6 @@ spec:
       - istio-gateway
     hosts:
       - "devops.imran"
-      - "internal.rollout"
     match:
       - uri:
           prefix: /api/
