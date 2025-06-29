@@ -239,7 +239,7 @@ deploy_initial_resources() {
     # Deploy sample workload
     if [[ "$namespace" != "default" ]]; then
         # Update namespace in deployment files
-        sed "s/namespace: .*/namespace: $namespace/" deploy.yaml | kubectl apply -f -
+        sed "s/namespace: .*/namespace: $namespace/" backend.yaml | kubectl apply -f -
         sed "s/namespace: .*/namespace: $namespace/" frontend.yaml | kubectl apply -f -
         sed "s/namespace: .*/namespace: $namespace/" gateway.yaml | kubectl apply -f -
     else

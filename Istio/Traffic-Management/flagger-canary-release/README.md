@@ -114,7 +114,7 @@ The script provides an interactive menu to:
 
 1. **Deploy the application:**
    ```bash
-   kubectl apply -f deploy.yaml
+   kubectl apply -f backend.yaml
    kubectl apply -f frontend.yaml
    kubectl apply -f gateway.yaml
    ```
@@ -289,7 +289,7 @@ istioctl dashboard jaeger
 kubectl delete canary canary-release
 
 # Delete application
-kubectl delete -f deploy.yaml
+kubectl delete -f backend.yaml
 kubectl delete -f frontend.yaml
 kubectl delete -f gateway.yaml
 
