@@ -20,6 +20,8 @@ spec:
                 secretKeyRef:
                   name: tmdb-api-key
                   key: TMDB_API_KEY
+            - name: DATA_DIR
+              value: bollywood-data
           resources:
             limits:
               memory: "1Gi"
