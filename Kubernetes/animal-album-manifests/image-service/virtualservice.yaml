@@ -15,5 +15,3 @@ spec:
     route:
     - destination:
         host: image-service
-        port:
-          number: 8000
