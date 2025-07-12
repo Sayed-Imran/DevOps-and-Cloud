@@ -4,6 +4,7 @@ metadata:
   name: image-service
   namespace: animal-album
 spec:
+  replicas: 5
   selector:
     matchLabels:
       app: image-service
