@@ -8,17 +8,17 @@ wait
 
 echo "Installing MetalLB on cluster1..."
 kubectl config use-context kind-cluster1
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
-kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml --config kind-cluster1
+kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s --config kind-cluster1
 sleep 10
-kubectl apply -f metallb-cluster1.yaml
+kubectl apply -f metallb-cluster1.yaml --config kind-cluster1
 
 echo "Installing MetalLB on cluster2..."
 kubectl config use-context kind-cluster2
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
-kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml --config kind-cluster2
+kubectl wait --namespace metallb-system --for=condition=ready pod --selector=app=metallb --timeout=90s --config kind-cluster2
 sleep 10
-kubectl apply -f metallb-cluster2.yaml
+kubectl apply -f metallb-cluster2.yaml --config kind-cluster2
 
 echo "Setup complete!"
 echo "Cluster1 MetalLB IP range: 172.17.255.1-172.17.255.100"
