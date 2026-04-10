@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: notes-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - notes-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: notes-backend
+    restart: unless-stopped
+    environment:
+      MONGO_URL: mongodb://mongodb:27017
+      DB_NAME: notesdb
+      # Change SECRET_KEY to a long random string before deploying anywhere
+      SECRET_KEY: "replace-this-with-a-long-random-secret"
+    # Backend is only reachable internally via Nginx; not exposed to the host
+    expose:
+      - "8000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - notes-net
+
+  frontend:
+    build: ./frontend
+    container_name: notes-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - notes-net
+
+volumes:
+  mongo_data:
+
+networks:
+  notes-net:
+    driver: bridge
