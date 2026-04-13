@@ -6,7 +6,7 @@ A simple three-tier notes application with JWT authentication.
 |----------|------------------------|
 | Frontend | React 18, served by Nginx |
 | Backend  | FastAPI (Python)       |
-| Database | MongoDB 7              |
+| Database | PostgreSQL 16          |
 
 ## Architecture
 
@@ -31,8 +31,8 @@ sample-app/
 │   ├── requirements.txt
 │   ├── main.py        # routes
 │   ├── auth.py        # JWT + password hashing
-│   ├── models.py      # Pydantic schemas
-│   └── database.py    # MongoDB connection
+│   ├── models.py      # SQLAlchemy ORM models + Pydantic schemas
+│   └── database.py    # PostgreSQL connection (SQLAlchemy + asyncpg)
 └── frontend/
     ├── Dockerfile     # multi-stage: Node build → nginx:alpine
     ├── nginx.conf     # reverse proxy + SPA config

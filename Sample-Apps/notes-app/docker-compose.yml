@@ -1,16 +1,20 @@
 services:
-  mongodb:
-    image: mongo:7
-    container_name: notes-mongodb
+  postgres:
+    image: postgres:16
+    container_name: notes-postgres
     restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: notesdb
     volumes:
-      - mongo_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
     expose:
-      - "27017"
+      - "5432"
     networks:
       - notes-net
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d notesdb"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -20,15 +24,14 @@ services:
     container_name: notes-backend
     restart: unless-stopped
     environment:
-      MONGO_URL: mongodb://mongodb:27017
-      DB_NAME: notesdb
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/notesdb
       # Change SECRET_KEY to a long random string before deploying anywhere
       SECRET_KEY: "replace-this-with-a-long-random-secret"
     # Backend is only reachable internally via Nginx; not exposed to the host
     expose:
       - "8000"
     depends_on:
-      mongodb:
+      postgres:
         condition: service_healthy
     networks:
       - notes-net
@@ -47,7 +50,7 @@ services:
       - notes-net
 
 volumes:
-  mongo_data:
+  postgres_data:
 
 networks:
   notes-net:
