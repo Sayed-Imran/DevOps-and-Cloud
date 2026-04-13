@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     volumes:
       - mongo_data:/data/db
+    expose:
+      - "27017"
     networks:
       - notes-net
     healthcheck:
@@ -34,6 +36,8 @@ services:
   frontend:
     build: ./frontend
     container_name: notes-frontend
+    x-google-cloudrun:
+      ingress-container: true
     restart: unless-stopped
     ports:
       - "80:80"
