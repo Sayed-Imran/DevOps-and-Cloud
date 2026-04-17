@@ -5,7 +5,7 @@ from datetime import timedelta, datetime
 from bson import ObjectId
 from bson.errors import InvalidId
 
-from database import db
+from database import db, client
 from models import UserCreate, Token, NoteCreate, NoteUpdate
 from auth import (
     get_password_hash,
@@ -24,6 +24,28 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ── Health & Readiness Probes ──────────────────────────────────────────────────
+
+@app.get("/healthz")
+async def health_check():
+    """Liveness probe - returns 200 if app is running"""
+    return {"status": "ok"}
+
+
+@app.get("/ready")
+async def readiness_check():
+    """Readiness probe - checks database connectivity"""
+    try:
+        # Ping the database to verify connectivity
+        await client.admin.command('ping')
+        return {"status": "ready", "database": "connected"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=503, 
+            detail=f"Database connection failed: {str(e)}"
+        )
 
 
 def serialize_note(note: dict) -> dict:
